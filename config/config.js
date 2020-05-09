@@ -1,31 +1,38 @@
-const Joi = require('joi');
+import joi from 'joi';
+import dotenv from 'dotenv';
 
 // require and configure dotenv, will load vars in .env in PROCESS.ENV
-require('dotenv').config();
+dotenv.config();
 
 // define validation for all the env vars
-const envVarsSchema = Joi.object({
-  NODE_ENV: Joi.string()
+const envVarsSchema = joi.object({
+  NODE_ENV: joi.string()
     .allow(['development', 'production', 'test', 'provision'])
     .default('development'),
-  PORT: Joi.number()
+  PORT: joi.number()
     .default(4040),
-  MONGOOSE_DEBUG: Joi.boolean()
+  MONGOOSE_DEBUG: joi.boolean()
     .when('NODE_ENV', {
-      is: Joi.string().equal('development'),
-      then: Joi.boolean().default(true),
-      otherwise: Joi.boolean().default(false)
+      is: joi.string()
+        .equal('development'),
+      then: joi.boolean()
+        .default(true),
+      otherwise: joi.boolean()
+        .default(false)
     }),
-  JWT_SECRET: Joi.string().required()
+  JWT_SECRET: joi.string()
+    .required()
     .description('JWT Secret required to sign'),
-  MONGO_HOST: Joi.string().required()
+  MONGO_HOST: joi.string()
+    .required()
     .description('Mongo DB host url'),
-  MONGO_PORT: Joi.number()
+  MONGO_PORT: joi.number()
     .default(27017)
-}).unknown()
+})
+  .unknown()
   .required();
 
-const { error, value: envVars } = Joi.validate(process.env, envVarsSchema);
+const { error, value: envVars } = joi.validate(process.env, envVarsSchema);
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }

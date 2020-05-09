@@ -1,20 +1,15 @@
-const express = require('express');
-const userRoutes = require('./server/user/user.route');
-const authRoutes = require('./server/auth/auth.route');
+import express from 'express';
+import { authRouter } from './server/routers/authRouter';
+import { roleRouter } from './server/routers/roleRouter';
+import { userRouter } from './server/routers/userRouter';
 
-const router = express.Router(); // eslint-disable-line new-cap
-
-// TODO: use glob to match *.route files
+const router = express.Router();
 
 /** GET /health-check - Check service health */
-router.get('/health-check', (req, res) =>
-  res.send('OK')
-);
+router.get('/health-check', (req, res) => res.send('OK'));
 
-// mount user routes at /users
-router.use('/users', userRoutes);
-
-// mount auth routes at /auth
-router.use('/auth', authRoutes);
+router.use('/users', userRouter);
+router.use('/roles', roleRouter);
+router.use('/auth', authRouter);
 
 module.exports = router;

@@ -1,10 +1,11 @@
-const mongoose = require('mongoose');
-const util = require('util');
+import mongoose from 'mongoose';
+import util from 'util';
 
 // config should be imported before importing any other file
 const config = require('./config/config');
 const app = require('./config/express');
 
+// eslint-disable-next-line import/order
 const debug = require('debug')('express-mongoose-es6-rest-api:index');
 
 // make bluebird default Promise
@@ -15,7 +16,13 @@ mongoose.Promise = Promise;
 
 // connect to mongo db
 const mongoUri = config.mongo.host;
-mongoose.connect(mongoUri, { server: { socketOptions: { keepAlive: 1 } } });
+mongoose.connect(mongoUri, {
+  keepAlive: 1,
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+});
+
 mongoose.connection.on('error', () => {
   throw new Error(`unable to connect to database: ${mongoUri}`);
 });

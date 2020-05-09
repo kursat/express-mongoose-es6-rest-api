@@ -5,15 +5,14 @@ module.exports = {
   createUser: {
     body: {
       username: Joi.string().required(),
-      mobileNumber: Joi.string().regex(/^[1-9][0-9]{9}$/).required()
+      password: Joi.string().min(6).max(16).required(),
+      roles: Joi.array().items(Joi.string()).required(),
     }
   },
 
   // UPDATE /api/users/:userId
   updateUser: {
     body: {
-      username: Joi.string().required(),
-      mobileNumber: Joi.string().regex(/^[1-9][0-9]{9}$/).required()
     },
     params: {
       userId: Joi.string().hex().required()
@@ -26,5 +25,32 @@ module.exports = {
       username: Joi.string().required(),
       password: Joi.string().required()
     }
-  }
+  },
+
+  createLayout: {
+    body: {
+      layout: Joi.object().required()
+    }
+  },
+
+  updateLayout: {
+    body: {
+      layout: Joi.object().required()
+    }
+  },
+
+  updateRole: {},
+  createRole: {},
+
+  updatePermission: {},
+  createPermission: {},
+
+  createTree: {},
+  updateTree: {},
+
+  createLayerTree: {},
+  updateLayerTree: {},
+
+  createSource: {},
+  updateSource: {},
 };

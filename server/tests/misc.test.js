@@ -1,10 +1,28 @@
 const request = require('supertest-as-promised');
 const httpStatus = require('http-status');
 const chai = require('chai'); // eslint-disable-line import/newline-after-import
-const expect = chai.expect;
+const { expect } = chai;
 const app = require('../../index');
 
 chai.config.includeStack = true;
+
+const authUser = {
+  email: 'kursat.yigitoglu@gmail.com',
+  password: '123456'
+};
+
+let jwtToken;
+
+before((done) => {
+  request(app)
+    .post('/api/auth/login')
+    .send(authUser)
+    .then((res) => {
+      jwtToken = `Bearer ${res.body.token}`;
+      done();
+    })
+    .catch(done);
+});
 
 describe('## Misc', () => {
   describe('# GET /api/health-check', () => {
@@ -45,15 +63,16 @@ describe('## Misc', () => {
         .catch(done);
     });
 
-    it('should handle express validation error - username is required', (done) => {
+    it('should handle express validation error - email is required', (done) => {
       request(app)
         .post('/api/users')
+        .set('Authorization', jwtToken)
         .send({
-          mobileNumber: '1234567890'
+          password: '1234567890'
         })
         .expect(httpStatus.BAD_REQUEST)
         .then((res) => {
-          expect(res.body.message).to.equal('"username" is required');
+          expect(res.body.message).to.equal('"email" is required');
           done();
         })
         .catch(done);
