@@ -3,7 +3,7 @@ import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import mongooseDelete from 'mongoose-delete';
 import {APIError} from '../helpers/APIError';
-import blamable from '../plugins/blamable';
+import blameable from '../plugins/blameable';
 
 const SALT_WORK_FACTOR = 10;
 /**
@@ -108,6 +108,6 @@ UserSchema.plugin(mongooseDelete, {
     overrideMethods: true,
     validateBeforeDelete: false,
 });
-UserSchema.plugin(blamable);
+UserSchema.plugin(blameable);
 
 export default mongoose.model('User', UserSchema);

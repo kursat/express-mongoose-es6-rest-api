@@ -31,7 +31,7 @@ class UserController {
     static create(req, res, next) {
         const user = new UserModel(req.body);
 
-        user.blamableSave(req.user.username)
+        user.blameableSave(req.user.username)
             .then((savedUser) => res.json(savedUser))
             .catch((e) => {
                 if (e.name === 'MongoError' && e.code === 11000) {
@@ -56,7 +56,7 @@ class UserController {
         const user = req.loadedUser;
         Object.assign(user, req.body);
 
-        user.blamableSave(req.user.username)
+        user.blameableSave(req.user.username)
             .then((savedUser) => res.json(savedUser))
             .catch((e) => next(e));
     }

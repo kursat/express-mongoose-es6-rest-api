@@ -1,4 +1,4 @@
-export default function blamable(schema) {
+export default function blameable(schema) {
     schema.add({
         updatedBy: {
             type: String,
@@ -9,7 +9,7 @@ export default function blamable(schema) {
     });
 
     // eslint-disable-next-line no-param-reassign
-    schema.methods.blamableSave = function blamableSave(savedBy, cb) {
+    schema.methods.blameableSave = function blameableSave(savedBy, cb) {
         if (this.isNew) {
             this.createdBy = savedBy;
             this.updatedBy = savedBy;

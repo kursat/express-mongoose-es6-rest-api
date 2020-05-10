@@ -18,7 +18,7 @@ class RoleController {
     static create(req, res, next) {
         const role = new RoleModel(req.body);
 
-        role.blamableSave(req.user.username)
+        role.blameableSave(req.user.username)
             .then((savedRole) => res.json(savedRole))
             .catch((e) => next(e));
     }
@@ -27,7 +27,7 @@ class RoleController {
         const role = req.loadedRole;
         Object.assign(role, req.body);
 
-        role.blamableSave(req.user.username)
+        role.blameableSave(req.user.username)
             .then((savedRole) => res.json(savedRole))
             .catch((e) => next(e));
     }

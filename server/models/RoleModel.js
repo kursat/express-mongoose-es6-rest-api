@@ -2,7 +2,7 @@ import httpStatus from 'http-status';
 import mongoose from 'mongoose';
 import mongooseDelete from 'mongoose-delete';
 import {APIError} from '../helpers/APIError';
-import blamable from '../plugins/blamable';
+import blameable from '../plugins/blameable';
 
 const RoleSchema = new mongoose.Schema(
     {
@@ -60,6 +60,6 @@ RoleSchema.plugin(mongooseDelete, {
     overrideMethods: true,
     validateBeforeDelete: false,
 });
-RoleSchema.plugin(blamable);
+RoleSchema.plugin(blameable);
 
 export default mongoose.model('Role', RoleSchema);
