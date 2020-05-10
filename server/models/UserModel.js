@@ -1,8 +1,9 @@
-const mongoose = require('mongoose');
-const mongooseDelete = require('mongoose-delete');
-const bcrypt = require('bcrypt');
-const blamable = require('../plugins/blamable');
-const defaultStatics = require('../plugins/defaultStatics');
+import bcrypt from 'bcrypt';
+import httpStatus from 'http-status';
+import mongoose from 'mongoose';
+import mongooseDelete from 'mongoose-delete';
+import { APIError } from '../helpers/APIError';
+import blamable from '../plugins/blamable';
 
 const SALT_WORK_FACTOR = 10;
 /**
@@ -74,11 +75,30 @@ UserSchema.method({
   }
 });
 
-UserSchema.plugin(defaultStatics, {
-  getPopulate: {
-    path: 'roles'
+UserSchema.statics = {
+  list({ skip = 0, limit = 50, filters = {} } = {}) {
+    return this.find(filters)
+      .sort({ createdAt: -1 })
+      .skip(+skip)
+      .limit(+limit)
+      .exec();
+  },
+  get(id) {
+    return this.findById(id)
+      .exec()
+      .then((model) => {
+        if (model) {
+          return model;
+        }
+        const err = new APIError(
+          'No such model exists!',
+          httpStatus.NOT_FOUND
+        );
+        return Promise.reject(err);
+      });
   }
-});
+};
+
 UserSchema.plugin(mongooseDelete, {
   deletedAt: true,
   deletedBy: true,
@@ -87,7 +107,4 @@ UserSchema.plugin(mongooseDelete, {
 });
 UserSchema.plugin(blamable);
 
-/**
- * @typedef User
- */
-module.exports = mongoose.model('User', UserSchema);
+export default mongoose.model('User', UserSchema);

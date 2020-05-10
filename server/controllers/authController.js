@@ -1,10 +1,11 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
-const httpStatus = require('http-status');
-const APIError = require('../helpers/APIError');
-const config = require('../../config/config');
-const User = require('../models/user.model');
-const { getUserRoles } = require('../helpers/authHelpers');
+import { compare } from 'bcrypt';
+import httpStatus from 'http-status';
+import jwt from 'jsonwebtoken';
+import config from '../../config/config';
+import { APIError } from '../helpers/APIError';
+import { getUserRoles } from '../helpers/authHelpers';
+
+import UserModel from '../models/UserModel';
 
 /**
  * Returns jwt token if valid username and password is provided
@@ -15,13 +16,13 @@ const { getUserRoles } = require('../helpers/authHelpers');
  */
 async function login(req, res, next) {
   try {
-    const user = await User.findOne({
+    const user = await UserModel.findOne({
       username: req.body.username
     }).populate({
       path: 'roles',
     });
 
-    const result = await bcrypt.compare(req.body.password, user.password);
+    const result = await compare(req.body.password, user.password);
 
     if (result) {
       const token = jwt.sign({
@@ -43,4 +44,6 @@ async function login(req, res, next) {
   return next(err);
 }
 
-module.exports = { login };
+export default {
+  login
+};

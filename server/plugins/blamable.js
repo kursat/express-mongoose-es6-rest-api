@@ -1,4 +1,4 @@
-module.exports = function blamable(schema) {
+export default function blamable(schema) {
   schema.add({
     updatedBy: {
       type: String,
@@ -19,4 +19,4 @@ module.exports = function blamable(schema) {
 
     return this.save(cb);
   };
-};
+}

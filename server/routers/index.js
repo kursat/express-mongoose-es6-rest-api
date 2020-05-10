@@ -1,7 +1,7 @@
 import express from 'express';
-import { authRouter } from './server/routers/authRouter';
-import { roleRouter } from './server/routers/roleRouter';
-import { userRouter } from './server/routers/userRouter';
+import authRouter from './authRouter';
+import roleRouter from './roleRouter';
+import userRouter from './userRouter';
 
 const router = express.Router();
 
@@ -12,4 +12,4 @@ router.use('/users', userRouter);
 router.use('/roles', roleRouter);
 router.use('/auth', authRouter);
 
-module.exports = router;
+export default router;

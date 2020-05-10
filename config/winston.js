@@ -1,6 +1,6 @@
-const winston = require('winston');
+import winston from 'winston';
 
-const logger = winston.createLogger({
+const winstonLogger = winston.createLogger({
   transports: [
     new (winston.transports.Console)({
       format: winston.format.combine(
@@ -14,4 +14,4 @@ const logger = winston.createLogger({
   ]
 });
 
-module.exports = logger;
+export default winstonLogger;

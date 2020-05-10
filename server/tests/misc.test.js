@@ -1,13 +1,14 @@
-const request = require('supertest-as-promised');
-const httpStatus = require('http-status');
-const chai = require('chai'); // eslint-disable-line import/newline-after-import
+import chai from 'chai';
+import httpStatus from 'http-status';
+import request from 'supertest-as-promised';
+import app from '../../server';
+
 const { expect } = chai;
-const app = require('../../index');
 
 chai.config.includeStack = true;
 
 const authUser = {
-  email: 'kursat.yigitoglu@gmail.com',
+  email: 'sample.user@domain.com',
   password: '123456'
 };
 

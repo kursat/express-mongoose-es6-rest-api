@@ -1,15 +1,15 @@
-const expressJwt = require('express-jwt');
-const express = require('express');
-const validate = require('express-validation');
-const paramValidation = require('../../config/param-validation');
-const userCtrl = require('../controllers/user.controller');
-const config = require('../../config/config');
+import { Router } from 'express';
+import expressJwt from 'express-jwt';
+import validate from 'express-validation';
+import paramValidation from '../../config/param-validation';
+import userController from '../controllers/userController';
+import config from '../../config/config';
 
-const userRouter = express.Router(); // eslint-disable-line new-cap
+const userRouter = Router(); // eslint-disable-line new-cap
 
 userRouter.route('/')
   /** GET /api/users - Get list of users */
-  .get(expressJwt({ secret: config.jwtSecret }), userCtrl.list)
+  .get(expressJwt({ secret: config.jwtSecret }), userController.list)
 
   /** POST /api/users - Create new user */
   .post(
@@ -17,12 +17,12 @@ userRouter.route('/')
       // expressJwt({ secret: config.jwtSecret }),
       validate(paramValidation.createUser)
     ],
-    userCtrl.create
+    userController.create
   );
 
 userRouter.route('/:userId')
   /** GET /api/users/:userId - Get user */
-  .get(expressJwt({ secret: config.jwtSecret }), userCtrl.get)
+  .get(expressJwt({ secret: config.jwtSecret }), userController.get)
 
   /** PUT /api/users/:userId - Update user */
   .put(
@@ -30,15 +30,13 @@ userRouter.route('/:userId')
       expressJwt({ secret: config.jwtSecret }),
       validate(paramValidation.updateUser)
     ],
-    userCtrl.update
+    userController.update
   )
 
   /** DELETE /api/users/:userId - Delete user */
-  .delete(expressJwt({ secret: config.jwtSecret }), userCtrl.remove);
+  .delete(expressJwt({ secret: config.jwtSecret }), userController.remove);
 
 /** Load user when API with userId route parameter is hit */
-userRouter.param('userId', userCtrl.load);
+userRouter.param('userId', userController.load);
 
-module.exports = {
-  userRouter
-};
+export default userRouter;

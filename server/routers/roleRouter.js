@@ -1,36 +1,34 @@
-const expressJwt = require('express-jwt');
-const express = require('express');
-const validate = require('express-validation');
-const paramValidation = require('../../config/param-validation');
-const roleCtrl = require('../controllers/role.controller');
-const config = require('../../config/config');
+import { Router } from 'express';
+import expressJwt from 'express-jwt';
+import validate from 'express-validation';
+import paramValidation from '../../config/param-validation';
+import roleController from '../controllers/roleController';
+import config from '../../config/config';
 
 // eslint-disable-next-line new-cap
-const roleRouter = express.Router();
+const roleRouter = Router();
 
 roleRouter.route('/')
-  .get(expressJwt({ secret: config.jwtSecret }), roleCtrl.list)
+  .get(expressJwt({ secret: config.jwtSecret }), roleController.list)
   .post(
     [
       expressJwt({ secret: config.jwtSecret }),
       validate(paramValidation.createRole)
     ],
-    roleCtrl.create
+    roleController.create
   );
 
 roleRouter.route('/:roleId')
-  .get(expressJwt({ secret: config.jwtSecret }), roleCtrl.get)
+  .get(expressJwt({ secret: config.jwtSecret }), roleController.get)
   .put(
     [
       expressJwt({ secret: config.jwtSecret }),
       validate(paramValidation.updateRole)
     ],
-    roleCtrl.update
+    roleController.update
   )
-  .delete(expressJwt({ secret: config.jwtSecret }), roleCtrl.remove);
+  .delete(expressJwt({ secret: config.jwtSecret }), roleController.remove);
 
-roleRouter.param('roleId', roleCtrl.load);
+roleRouter.param('roleId', roleController.load);
 
-module.exports = {
-  roleRouter
-};
+export default roleRouter;

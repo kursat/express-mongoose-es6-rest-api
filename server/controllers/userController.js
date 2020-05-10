@@ -1,13 +1,11 @@
-const schemaFields = require('../helpers/schemaFields');
-const { isAdmin } = require('../helpers/authHelpers');
-
-const User = require('../models/user.model');
+import schemaFields from '../helpers/schemaFields';
+import UserModel from '../models/UserModel';
 
 /**
  * Load user and append to req.
  */
 function load(req, res, next, id) {
-  User.get(id)
+  UserModel.get(id)
     .then((user) => {
       req.loadedUser = user; // eslint-disable-line no-param-reassign
       return next();
@@ -17,24 +15,22 @@ function load(req, res, next, id) {
 
 /**
  * Get user
- * @returns {User}
+ * @returns {UserModel}
  */
 function get(req, res) {
-  if (isAdmin(req.keycloak)) {
-    res.json(req.loadedUser);
-  } else { res.status(401).send(); }
+  res.json(req.loadedUser);
 }
 
 /**
  * Create new user
  * @property {string} req.body.username - The username of user.
  * @property {string} req.body.mobileNumber - The mobileNumber of user.
- * @returns {User}
+ * @returns {UserModel}
  */
 function create(req, res, next) {
-  const user = new User(req.body);
+  const user = new UserModel(req.body);
 
-  user.blamableSave('req.keycloak.preferred_username')
+  user.blamableSave(req.user.username)
     .then((savedUser) => res.json(savedUser))
     .catch((e) => {
       if (e.name === 'MongoError' && e.code === 11000) {
@@ -49,24 +45,22 @@ function create(req, res, next) {
  * Update existing user
  * @property {string} req.body.username - The username of user.
  * @property {string} req.body.mobileNumber - The mobileNumber of user.
- * @returns {User}
+ * @returns {UserModel}
  */
 function update(req, res, next) {
   const user = req.loadedUser;
   Object.assign(user, req.body);
 
-  if (isAdmin(req.keycloak) || req.keycloak.preferred_username === req.loadedUser._id) {
-    user.blamableSave(req.keycloak.preferred_username)
-      .then((savedUser) => res.json(savedUser))
-      .catch((e) => next(e));
-  } else { res.status(401).send(); }
+  user.blamableSave(req.user.username)
+    .then((savedUser) => res.json(savedUser))
+    .catch((e) => next(e));
 }
 
 /**
  * Get user list.
  * @property {number} req.query.skip - Number of users to be skipped.
  * @property {number} req.query.limit - Limit number of users to be returned.
- * @returns {User[]}
+ * @returns {UserModel[]}
  */
 function list(req, res, next) {
   const { limit = 50, skip = 0, ...filters } = req.query;
@@ -75,13 +69,13 @@ function list(req, res, next) {
     filters[key] = new RegExp(filters[key], 'i');
   });
 
-  User.countDocuments(filters, (err, count) => {
-    User.list({ limit, skip, filters })
+  UserModel.countDocuments(filters, (err, count) => {
+    UserModel.list({ limit, skip, filters })
       .then((users) => res.json(
         {
           count,
           results: users,
-          fields: schemaFields(User.schema)
+          fields: schemaFields(UserModel.schema)
         }
       ))
       .catch((e) => next(e));
@@ -90,17 +84,15 @@ function list(req, res, next) {
 
 /**
  * Delete user.
- * @returns {User}
+ * @returns {UserModel}
  */
 function remove(req, res, next) {
   const user = req.loadedUser;
-  if (isAdmin(req.keycloak)) {
-    user.delete(req.keycloak.preferred_username)
-      .then((deletedUser) => res.json(deletedUser))
-      .catch((e) => next(e));
-  } else { res.status(401).send(); }
+  user.delete(req.user.username)
+    .then((deletedUser) => res.json(deletedUser))
+    .catch((e) => next(e));
 }
 
-module.exports = {
+export default {
   load, get, create, update, list, remove
 };

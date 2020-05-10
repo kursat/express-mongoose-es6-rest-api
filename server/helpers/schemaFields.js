@@ -1,4 +1,4 @@
-const { objectFromEntries } = require('../helpers/objectFromEntries');
+import { fromPairs } from 'lodash-es';
 
 const forbiddenFields = ['_id', '__v', 'deleted', 'password'];
 
@@ -7,7 +7,7 @@ const schemaFields = (schema) => {
     .filter((key) => !forbiddenFields.includes(key))
     .map((key) => [key, schema.paths[key].instance.toLowerCase()]);
 
-  return objectFromEntries(pairs);
+  return fromPairs(pairs);
 };
 
-module.exports = schemaFields;
+export default schemaFields;

@@ -23,16 +23,15 @@ const envVarsSchema = joi.object({
   JWT_SECRET: joi.string()
     .required()
     .description('JWT Secret required to sign'),
-  MONGO_HOST: joi.string()
+  MONGO_CONNECTION_URL: joi.string()
     .required()
-    .description('Mongo DB host url'),
-  MONGO_PORT: joi.number()
-    .default(27017)
+    .description('Mongo DB connection url'),
 })
   .unknown()
   .required();
 
 const { error, value: envVars } = joi.validate(process.env, envVarsSchema);
+
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
@@ -40,12 +39,9 @@ if (error) {
 const config = {
   env: envVars.NODE_ENV,
   port: envVars.PORT,
-  mongooseDebug: envVars.MONGOOSE_DEBUG,
   jwtSecret: envVars.JWT_SECRET,
-  mongo: {
-    host: envVars.MONGO_HOST,
-    port: envVars.MONGO_PORT
-  }
+  mongooseDebug: envVars.MONGOOSE_DEBUG,
+  mongoConnectionUrl: envVars.MONGO_CONNECTION_URL
 };
 
-module.exports = config;
+export default config;

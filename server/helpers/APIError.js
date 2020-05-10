@@ -1,6 +1,7 @@
 // eslint-disable-next-line max-classes-per-file
-const httpStatus = require('http-status');
+import httpStatus from 'http-status';
 
+// noinspection JSClosureCompilerSyntax
 /**
  * @extends Error
  */
@@ -16,6 +17,7 @@ class ExtendableError extends Error {
   }
 }
 
+// noinspection JSClosureCompilerSyntax
 /**
  * Class representing an API error.
  * @extends ExtendableError
@@ -32,5 +34,7 @@ class APIError extends ExtendableError {
   }
 }
 
-
-module.exports = APIError;
+export {
+  APIError,
+  ExtendableError
+};

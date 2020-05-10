@@ -1,23 +1,23 @@
-const express = require('express');
-const logger = require('morgan');
-const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser');
-const compress = require('compression');
-const methodOverride = require('method-override');
-const cors = require('cors');
-const httpStatus = require('http-status');
-const expressWinston = require('express-winston');
-const expressValidation = require('express-validation');
-const helmet = require('helmet');
-const winstonInstance = require('./winston');
-const routes = require('../index.route');
-const config = require('./config');
-const APIError = require('../server/helpers/APIError');
+import bodyParser from 'body-parser';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import express from 'express';
+import expressValidation from 'express-validation';
+import expressWinston from 'express-winston';
+import helmet from 'helmet';
+import httpStatus from 'http-status';
+import methodOverride from 'method-override';
+import morgan from 'morgan';
+import { APIError } from '../server/helpers/APIError';
+import routes from '../server/routers/index';
+import config from './config';
+import winstonInstance from './winston';
 
 const app = express();
 
 if (config.env === 'development') {
-  app.use(logger('dev'));
+  app.use(morgan('dev'));
 }
 
 // parse body params and attache them to req.body
@@ -25,7 +25,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(cookieParser());
-app.use(compress());
+app.use(compression());
 app.use(methodOverride());
 
 // secure apps by setting various HTTP headers
@@ -86,4 +86,4 @@ app.use((err, req, res) => res.status(err.status)
     stack: config.env === 'development' ? err.stack : {}
   }));
 
-module.exports = app;
+export default app;
