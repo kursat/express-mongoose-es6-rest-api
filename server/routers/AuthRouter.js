@@ -7,8 +7,8 @@ const AuthRouter = Router();
 
 /** POST /api/auth/login - Returns token if correct username and password is provided */
 AuthRouter.route('/login').post(
-    validate(paramValidation.login),
-    AuthController.login,
+	validate(paramValidation.login),
+	AuthController.login,
 );
 
 export default AuthRouter;

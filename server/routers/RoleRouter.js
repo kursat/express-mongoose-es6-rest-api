@@ -9,25 +9,25 @@ import config from '../../config/config';
 const RoleRouter = Router();
 
 RoleRouter.route('/')
-    .get(expressJwt({secret: config.jwtSecret}), RoleController.list)
-    .post(
-        [
-            expressJwt({secret: config.jwtSecret}),
-            validate(paramValidation.createRole),
-        ],
-        RoleController.create,
-    );
+	.get(expressJwt({secret: config.jwtSecret}), RoleController.list)
+	.post(
+		[
+			expressJwt({secret: config.jwtSecret}),
+			validate(paramValidation.createRole),
+		],
+		RoleController.create,
+	);
 
 RoleRouter.route('/:roleId')
-    .get(expressJwt({secret: config.jwtSecret}), RoleController.get)
-    .put(
-        [
-            expressJwt({secret: config.jwtSecret}),
-            validate(paramValidation.updateRole),
-        ],
-        RoleController.update,
-    )
-    .delete(expressJwt({secret: config.jwtSecret}), RoleController.remove);
+	.get(expressJwt({secret: config.jwtSecret}), RoleController.get)
+	.put(
+		[
+			expressJwt({secret: config.jwtSecret}),
+			validate(paramValidation.updateRole),
+		],
+		RoleController.update,
+	)
+	.delete(expressJwt({secret: config.jwtSecret}), RoleController.remove);
 
 RoleRouter.param('roleId', RoleController.load);
 
