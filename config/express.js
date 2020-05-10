@@ -16,6 +16,10 @@ import winstonInstance from './winston';
 
 const app = express();
 
+/**
+ * Dont mind deprecation warning
+ * https://github.com/expressjs/morgan/issues/190
+ */
 if (config.env === 'development') {
     app.use(morgan('dev'));
 }
